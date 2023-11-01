@@ -1,6 +1,8 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.model_selection import learning_curve
 
 def load_original_data(file_path="../artifacts/fetal_health.csv") -> pd.DataFrame:
     df = pd.read_csv(file_path)
@@ -61,3 +63,45 @@ def algorithm_comparison(cv_results_accuracy:dict, pipe_dict:dict) -> None:
     plt.boxplot(cv_results_accuracy)
     ax.set_xticklabels(pipe_dict.values())
     plt.show()
+
+def plot_learning_curve(model:object, title:str, X:pd.DataFrame, y:pd.DataFrame,
+                        ylim:tuple=None, cv:int=None, n_jobs:int=None,
+                        train_sizes:tuple=np.linspace(.1, 1.0, 5)) -> plt:
+    """
+    Generate a simple plot of the test and training learning curve.
+    :param model: model
+    :param title: title of the plot
+    :param X: features
+    :param y: target
+    :param ylim: tuple with the limits of the y axis
+    :param cv: cross validation
+    :param n_jobs: number of jobs
+    :param train_sizes: train sizes
+    :return: plot
+    """
+    plt.figure()
+    plt.title(title)
+    if ylim is not None:
+        plt.ylim(*ylim)
+    plt.xlabel("Training dataset size")
+    plt.ylabel("Score")
+    train_sizes, train_scores, test_scores = learning_curve(
+        model, X, y, cv=cv, n_jobs=n_jobs, train_sizes=train_sizes)
+    train_scores_mean = np.mean(train_scores, axis=1)
+    train_scores_std = np.std(train_scores, axis=1)
+    test_scores_mean = np.mean(test_scores, axis=1)
+    test_scores_std = np.std(test_scores, axis=1)
+    plt.grid()
+
+    plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
+                     train_scores_mean + train_scores_std, alpha=0.1,
+                     color="r")
+    plt.fill_between(train_sizes, test_scores_mean - test_scores_std,
+                     test_scores_mean + test_scores_std, alpha=0.1, color="g")
+    plt.plot(train_sizes, train_scores_mean, 'o-', color="r",
+             label="Training score")
+    plt.plot(train_sizes, test_scores_mean, 'o-', color="g",
+             label="Cross-validation score")
+
+    plt.legend(loc="best")
+    return plt
