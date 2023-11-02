@@ -105,3 +105,33 @@ def plot_learning_curve(model:object, title:str, X:pd.DataFrame, y:pd.DataFrame,
 
     plt.legend(loc="best")
     return plt
+
+def feature_importance(model:object, X_train:pd.DataFrame, y_train:pd.DataFrame,
+                         df:pd.DataFrame, title:str) -> tuple:
+    """
+    Plot feature importance
+    :param model: model
+    :param X_train: features
+    :param y_train: target
+    :param df: dataframe
+    :param title: title of the plot
+    :return: best features and highest importances
+    """
+    # fit the model
+    model.fit(X_train, y_train)
+    # get importance
+    importance = model.feature_importances_
+    # summarize feature importance
+    for i,v in enumerate(importance):
+        print('Feature: %s, Score: %.5f' % (df.columns[i],v))
+    # 5 most important features
+    idx = np.argsort(importance)[::-1][:5]
+    highest_importances = importance[idx]
+    best_features = df.columns[idx]
+    # plot feature importance
+    fig = plt.figure(figsize=(50, 35))
+    plt.title(title, fontsize=50)
+    plt.bar([x for x in df.columns[:-1]], importance)
+    plt.show()
+    return best_features, highest_importances
+    
