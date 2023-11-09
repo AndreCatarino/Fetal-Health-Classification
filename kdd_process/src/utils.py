@@ -50,7 +50,7 @@ def split_data(df:pd.DataFrame) -> tuple:
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=13,shuffle=True)
     return X_train, X_test, y_train, y_test
 
-def algorithm_comparison(cv_results_accuracy:dict, pipe_dict:dict) -> None:
+def algorithm_comparison(cv_results:dict, pipe_dict:dict, title:str) -> None:
     """
     Compare the accuracy of different algorithms
     :param cv_results_accuracy: dictionary with the accuracy of each algorithm
@@ -58,13 +58,12 @@ def algorithm_comparison(cv_results_accuracy:dict, pipe_dict:dict) -> None:
     :return: None
     """
     fig = plt.figure(figsize=(10,6))
-    fig.suptitle('Algorithm Comparison')
+    fig.suptitle(title)
     ax = fig.add_subplot(111)
-    plt.boxplot(cv_results_accuracy)
+    plt.boxplot(cv_results)
     ax.set_xticklabels(pipe_dict.values())
-    ax.set_ylabel('Accuracy')
     # save plot
-    plt.savefig('../plots/algorithm_comparison.png')
+    plt.savefig('../plots/{}.png'.format(title.replace(" ", "_")))
     plt.show()
 
 def plot_learning_curve(model:object, title:str, X:pd.DataFrame, y:pd.DataFrame,
