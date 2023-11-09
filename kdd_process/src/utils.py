@@ -62,6 +62,9 @@ def algorithm_comparison(cv_results_accuracy:dict, pipe_dict:dict) -> None:
     ax = fig.add_subplot(111)
     plt.boxplot(cv_results_accuracy)
     ax.set_xticklabels(pipe_dict.values())
+    ax.set_ylabel('Accuracy')
+    # save plot
+    plt.savefig('../plots/algorithm_comparison.png')
     plt.show()
 
 def plot_learning_curve(model:object, title:str, X:pd.DataFrame, y:pd.DataFrame,
@@ -104,6 +107,8 @@ def plot_learning_curve(model:object, title:str, X:pd.DataFrame, y:pd.DataFrame,
              label="Cross-validation score")
 
     plt.legend(loc="best")
+    # save plot
+    plt.savefig('../plots/learning_curve.png')
     return plt
 
 def feature_importance(model:object, X_train:pd.DataFrame, y_train:pd.DataFrame,
@@ -132,6 +137,8 @@ def feature_importance(model:object, X_train:pd.DataFrame, y_train:pd.DataFrame,
     fig = plt.figure(figsize=(50, 35))
     plt.title(title, fontsize=50)
     plt.bar([x for x in df.columns[:-1]], importance)
+    # save plot
+    plt.savefig('../plots/feature_importance.png')
     plt.show()
     return best_features, highest_importances
     
